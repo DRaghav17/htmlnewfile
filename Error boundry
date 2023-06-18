@@ -1,0 +1,114 @@
+app.js
+import React from "react";
+
+import "../styles/App.css";
+
+import Component from "./Component";
+
+import ErrorBoundary from "./ErrorBoundary";
+
+const App = () => {
+
+  let setFunc;
+
+  let changeFunc = (func) => {
+
+    setFunc = func;
+
+  };
+
+  const errorGenerator = () => {
+
+    setFunc(true);
+
+  };
+
+  return (
+
+    <div id="main">
+
+      <h2>React Error Boundaries</h2>
+
+      <ErrorBoundary>
+
+        <Component change={changeFunc} />
+
+      </ErrorBoundary>
+
+      <button id="gen" onClick={errorGenerator}>
+
+        Generate Error
+
+      </button>
+
+    </div>
+
+  );
+
+};
+
+export default App;
+component.js
+import React, { useState } from "react";
+
+const Component = (props) => {
+
+  const [error, setError] = useState(false);
+
+  props.change(setError);
+
+  if (error) {
+
+    throw new Error("Error");
+
+  }
+
+  return <></>;
+
+};
+
+export default Component;
+errorboundary.js
+import React from "react";
+
+class ErrorBoundary extends React.Component {
+
+  constructor(props) {
+
+    super(props);
+
+    this.state = { error: false };
+
+  }
+
+  static getDerivedStateFromError(error) {
+
+    return { hasError: true };
+
+  }
+
+  render() {
+
+    if (this.state.hasError) {
+
+      return (
+
+        <p id="error">
+
+          There is an error in your react app. Please Check again. This message
+
+          has been generated from error boundary
+
+        </p>
+
+      );
+
+    }
+
+    return <>{this.props.children}</>;
+
+  }
+
+}
+
+export default ErrorBoundary;
